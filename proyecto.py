@@ -98,38 +98,19 @@ def ventana():
         resizedbullet= bullet.resize((100,52), Image.LANCZOS)
         newbullet= ImageTk.PhotoImage(resizedbullet)
 
+        alienbullet=ImageTk.PhotoImage(resizedbullet)
+
         #Imagen de alien
         alien= (Image.open("alien.gif"))
 
         resizedalien= alien.resize((85,57), Image.LANCZOS)
         newalien= ImageTk.PhotoImage(resizedalien)
 
+                                
+
         #Creacion del alien
 
-        def movealiens(canvas,alien):
-                canvas.move(alien, -5, 0)
-                game.after(10,movealiens,canvas,alien)
-                alienshoot(canvas,alien)
-                
-        def aliens(canvas,newalien):
-                global enemigoslista,contador_enemigos
-                if contador_enemigos<9:
-                        x=random.randint(700,750)
-                        y=random.randint(100,400)
-                        alien=canvas.create_image(x,y, image=newalien)
-                        movealiens(canvas,alien)
-                        
-                        enemigoslista.append(alien)
-                        contador_enemigos+=1
-                        game.after(1000,aliens,canvas,newalien)
-                        
-                else:
-                        if not enemigoslista: # si no hay enemigos, reiniciar contador
-                                contador_enemigos = 0
-                        game.after(800,aliens,canvas,newalien)
-        aliens(canvas,newalien)
-
-        def movelaseralien(id, laseralien, laseralienloop):
+        """def movelaseralien(id, laseralien, laseralienloop):
                 global balasaliens, enemigoslista
                 try:
                         bordelaseralien = canvas.bbox(laseralien)
@@ -140,10 +121,13 @@ def ventana():
                                         game.after_cancel(laseralienloop)
                                 remove_bala_alien(id)      
                         else:
-                                canvas.move(laseralien, 10, 0)
-                                laserloopalien = game.after(10, movelaseralien, id, laseralien, laseralienloop)               
+                                canvas.move(laseralien, -10, 0)
+                                laserloopalien = game.after(10, movelaseralien, id, laseralien, laseralienloop)
+                                if len(enemigoslista)>0:
+                                        colisionbala(laser,0)
                 except:
                         return
+        
                 
         def remove_bala_alien(id):
                 global balasaliens
@@ -168,7 +152,7 @@ def ventana():
                                 #posicion de bala
                                 xabala = xa1 - 20
                                 yabala = (ya1 + ya2) / 2
-                                laseralien = canvas.create_image(xabala, yabala, image=newbullet)
+                                laseralien = canvas.create_image(xabala, yabala, image=alienbullet)
                                 id = canvas.create_text(xabala, yabala, text='', fill='white', font=('arial', 1))
                                 laseralienloop = game.after(10, movelaseralien, id, laseralien, None)
                                 balasaliens.append({'id': id, 'laseralien': laseralien, 'laseralienloop': laseralienloop})
@@ -183,7 +167,7 @@ def ventana():
                                 xa1, ya1, xa2, ya2 = bordealien
                                 xabala = xa1 - 20
                                 yabala = (ya1 + ya2) / 2
-                                laseralien = canvas.create_image(xabala, yabala, image=newbullet)
+                                laseralien = canvas.create_image(xabala, yabala, image=alienbullet)
                                 id = canvas.create_text(xabala, yabala, text='', fill='white', font=('arial', 1))
                                 laseralienloop = game.after(10, movelaseralien, id, laseralien, None)
                                 balasaliens.append({'id': id, 'laseralien': laseralien, 'laseralienloop': laseralienloop})
@@ -191,7 +175,33 @@ def ventana():
                                 pygame.mixer.init()
                                 blastsound=pygame.mixer.Sound('blast shot.wav')
                                 blastsound.play()
-                                blastsound.set_volume(0.3)
+                                blastsound.set_volume(0.3)"""
+
+        def movealiens(canvas,alien):
+                canvas.move(alien, -1, 0)
+                game.after(10,movealiens,canvas,alien)
+                """alienshoot(canvas,alien)"""
+                       
+                
+        def aliens(canvas,newalien):
+                global enemigoslista,contador_enemigos
+                if contador_enemigos<9:
+                        x=random.randint(700,750)
+                        y=random.randint(100,400)
+                        alien=canvas.create_image(x,y, image=newalien)
+                        movealiens(canvas,alien)
+                        
+                        enemigoslista.append(alien)
+                        contador_enemigos+=1
+                        game.after(1000,aliens,canvas,newalien)
+                        
+                else:
+                        if not enemigoslista: # si no hay enemigos, reiniciar contador
+                                contador_enemigos = 0
+                        game.after(800,aliens,canvas,newalien)
+        aliens(canvas,newalien)
+
+        
        
         #Funciones de movimiento 
 
@@ -273,9 +283,7 @@ def ventana():
         def stopright(event):
                 global rightloop
                 game.after_cancel(rightloop)
-                
-        
-        
+
         #Funcion de disparo de la bala de la nave
 
         def movelaser(id, laser, laserloop):
@@ -366,7 +374,10 @@ def ventana():
                                 blastsound=pygame.mixer.Sound('blast shot.wav')
                                 blastsound.play()
                                 blastsound.set_volume(0.3)
-                                
+                
+        
+        
+        
       
         #Funciones de Tecla
                 
@@ -389,7 +400,6 @@ def ventana():
         #Boton de Regreso
         volver = tk.Button(game, text="Volver", width=10, command=lambda:destruye_ventana(game,ventanamain))
         volver.place(x=900, y=570)
-        
         ventanamain.mainloop()
 
     def highscore():
